@@ -54,6 +54,7 @@ async def leave(message, args, author, client) :
 
 async def help(message, args, author, client) :
     helpList = []
+    await client.send_message(message.channel, 'Okay {}, sending you help, check your PMs!'.format(author.name))
     for cmd in client.cmd_list :
         if cmd.has_perms(author) :
             helpList.append(str(cmd))

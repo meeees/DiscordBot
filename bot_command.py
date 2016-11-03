@@ -14,7 +14,7 @@ class cmd_lvl(Enum):
     
 class bot_cmd:
     def __init__(self, cmd, run, lvl = cmd_lvl.everyone, desc = 'Default Description'):
-        self.cmd = cmd
+        self.cmd = cmd.lower()
         self.run = run
         self.desc = desc
         self.lvl = lvl
@@ -35,8 +35,9 @@ class bot_cmd:
             return type(user) is discord.member.Member and user.top_role.permissions.administrator
 
 def find_command(message, client):
+    test = message.content.lower()
     for cmd in client.cmd_list :
-        if message.content.startswith(cmd.cmd) :
+        if test.startswith(cmd.cmd) :
             return cmd
     return None
         
