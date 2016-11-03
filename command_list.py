@@ -21,6 +21,9 @@ async def deleteme(message, args, author, client) :
         await client.edit_message(tmp, 'Deleted {} messages from me.'.format(counter))
             
 async def deletecmds(message, args, author, client) :
+    if message.channel.is_private :
+        await client.send_message(message.channel, 'I cannot delete your messages in a private channel')
+        return
     counter = 0
     tmp = await client.send_message(message.channel, 'Finding messages...')
     async for log in client.logs_from(message.channel, limit=100):
@@ -48,3 +51,10 @@ async def leave(message, args, author, client) :
     vClient = client.voice_client_in(message.server)
     if vClient != None:
         await vClient.disconnect()
+
+async def help(message, args, author, client) :
+    helpList = []
+    for cmd in client.cmd_list :
+        if cmd.has_perms(author) :
+            helpList.append(str(cmd))
+    await client.send_message(author, 'Here are all the commands you can use (in wherever you typed !help):\n```\n' + ('\n'.join(helpList)) + '\n```')

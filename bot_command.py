@@ -24,10 +24,15 @@ class bot_cmd:
         return '{} {}'.format(self.cmd, self.desc)
 
     async def execute(self, message, args, author, client):
-        if self.lvl == cmd_lvl.admins :
-            if not (type(author) is discord.member.Member and author.top_role.permissions.administrator) :
-                return
+        if not self.has_perms(author) :
+            return
         await self.run(message, args, author, client)
+
+    def has_perms(self, user) :
+        if self.lvl == cmd_lvl.everyone :
+            return True
+        if self.lvl == cmd_lvl.admins :
+            return type(user) is discord.member.Member and user.top_role.permissions.administrator
 
 def find_command(message, client):
     for cmd in client.cmd_list :
@@ -37,7 +42,8 @@ def find_command(message, client):
         
 def init_commands() :
     cmds = []
-    
+
+    cmds.append(bot_cmd("!help", cmdlst.help))
     cmds.append(bot_cmd("!ping", cmdlst.ping))
     cmds.append(bot_cmd("!noise", cmdlst.noise))
     cmds.append(bot_cmd("!deleteme", cmdlst.deleteme))
