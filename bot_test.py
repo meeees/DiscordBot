@@ -12,6 +12,7 @@ if not discord.opus.is_loaded():
 
 client = discord.Client()
 client.cmd_list = botcmd.init_commands()
+botcmd.client = client
 
 @client.event
 async def on_ready():
@@ -31,5 +32,9 @@ async def on_message(message):
 
 with open('token.txt', 'r') as f:
     token = f.read()
+
+with open('admins.txt', 'r') as f:
+    #list of all the bot admins by userid
+    client.bot_admins = f.read().split('\n')
 
 client.run(token)
