@@ -37,7 +37,7 @@ class bot_cmd:
         if self.lvl == cmd_lvl.everyone :
             return True
         if self.lvl == cmd_lvl.mods :
-            return type(user) is discord.member.Member and user.top_role.permisions.mute_members
+            return type(user) is discord.member.Member and user.top_role.permissions.mute_members
         if self.lvl == cmd_lvl.admins :
             return type(user) is discord.member.Member and user.top_role.permissions.administrator
         if self.lvl == cmd_lvl.bot_admins :
