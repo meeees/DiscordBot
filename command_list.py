@@ -1,6 +1,5 @@
 import discord
 import asyncio
-import sys
 from random import randint
 
 async def ping(message, args, author, client) :
@@ -65,4 +64,3 @@ async def endbot(message, args, author, client) :
     await client.send_message(message.channel, 'Goodbye!')
     print ("Ending due to command from {}".format(author.name))
     await client.logout()
-    sys.exit()
