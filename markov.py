@@ -105,7 +105,7 @@ class markov_chain :
 		self.compute()
 
 
-
+#if we want to pull chains for multiple people from the same data
 class personal_markov_chain :
 
 	def __init__(self, names, two = False) :
@@ -141,4 +141,6 @@ class personal_markov_chain :
 if __name__ == '__main__' :
 	#this is where you can generate text inside this file
 	#just make either a personal chain or a generic chain and load from a correct path
-	pass
+	bee_movie = markov_chain()
+	bee_movie.load_markov("bot-data/beemovie.txt")
+	print(bee_movie.make_sentence())
