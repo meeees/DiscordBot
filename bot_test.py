@@ -30,10 +30,10 @@ async def on_message(message):
     if msgCmd:
         await msgCmd.execute(message, '', message.author, client)
 
-with open('token.txt', 'r') as f:
+with open('bot-data/token.txt', 'r') as f:
     token = f.read()
 
-with open('admins.txt', 'r') as f:
+with open('bot-data/admins.txt', 'r') as f:
     #list of all the bot admins by userid
     client.bot_admins = f.read().split('\n')
 

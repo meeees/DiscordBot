@@ -2,6 +2,7 @@ import discord
 import asyncio
 import command_list as cmdlst
 import sys
+import importlib
 
 from enum import Enum
 
@@ -31,6 +32,15 @@ class bot_cmd:
     async def execute(self, message, args, author, client):
         if not self.has_perms(author) :
             return
+        #special check here to see if we need to reload the commands
+        #this only reloads functionality, to add more commands the entire bot must be restarted for now
+        if(self.cmd == '!reload') :
+            global cmdlst
+            cmdlst = importlib.reload(cmdlst)
+            client.cmd_list = init_commands()
+            print ('Reloaded commands')
+            await client.send_message(message.channel, 'Reloaded command functionality')
+            return
         await self.run(message, args, author, client)
 
     def has_perms(self, user) :
@@ -54,6 +64,7 @@ def find_command(message, client):
 def init_commands() :
     cmds = []
 
+    cmds.append(bot_cmd("!reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
     cmds.append(bot_cmd("!help", cmdlst.help, 1, 'Show a user all the commands they can use'))
     cmds.append(bot_cmd("!ping", cmdlst.ping, 1, 'If I\'m alive I will say Pong!'))
     cmds.append(bot_cmd("!noise", cmdlst.noise, 1, 'Generate 20 random letters'))
@@ -62,6 +73,7 @@ def init_commands() :
     cmds.append(bot_cmd("!join", cmdlst.join, cmd_lvl.admins, 'Join the voice channel the user is in'))
     cmds.append(bot_cmd("!leave", cmdlst.leave, cmd_lvl.admins, 'Leave whatever voice channel the bot is in'))
     cmds.append(bot_cmd("!killme", cmdlst.endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'))
+    cmds.append(bot_cmd("!downloadchat", cmdlst.downloadhistory, cmd_lvl.bot_admins, 'Downloads chat history since the last download in the current channel'))
                 
     return cmds
 
