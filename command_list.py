@@ -1,7 +1,8 @@
 import discord
 import asyncio
 import os, datetime, time, base64
-from random import randint
+from random import randint, SystemRandom
+import facts
 
 async def ping(message, args, author, client) :
     await client.send_message(message.channel, 'Pong!')
@@ -70,6 +71,15 @@ async def testing(message, args, author, client) :
     log_data = client.logs_from(message.channel, 1)
     async for log in log_data :
         print(log)
+
+async def rockfact(message, args, author, client) :
+    await client.send_message(message.channel, facts.get_fact('rock'))
+
+async def coinflip(message, args, author, client) :
+    if SystemRandom().randint(0, 2) == 1 :
+        await client.send_message(message.channel, 'Heads!')
+    else :
+        await client.send_message(message.channel, 'Tails!')
 
 async def downloadhistory(message, args, author, client) :
     channel = message.channel.name

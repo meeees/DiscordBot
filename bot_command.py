@@ -74,6 +74,8 @@ def init_commands() :
     cmds.append(bot_cmd("!leave", cmdlst.leave, cmd_lvl.admins, 'Leave whatever voice channel the bot is in'))
     cmds.append(bot_cmd("!killme", cmdlst.endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'))
     cmds.append(bot_cmd("!downloadchat", cmdlst.downloadhistory, cmd_lvl.bot_admins, 'Downloads chat history since the last download in the current channel'))
+    cmds.append(bot_cmd("!rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
+    cmds.append(bot_cmd("!flip", cmdlst.coinflip, 1, 'Flip a coin with cryptographically secure randomness!'))
                 
     return cmds
 
