@@ -3,7 +3,6 @@ import asyncio
 import os, datetime, time, base64
 from random import randint, SystemRandom
 import facts
-import datetime
 
 async def ping(message, args, author, client) :
     await message.channel.send('Pong!')
@@ -116,8 +115,8 @@ async def roulette(message, args, author, client) :
 
 async def downloadhistory(message, args, author, client) :
     channel = message.channel.name
-    serverid = message.server.id
-    dir_path = "bot-data/" + serverid
+    serverid = message.channel.guild.id
+    dir_path = "bot-data/" + str(serverid)
     if not os.path.exists(dir_path) :
         os.makedirs(dir_path)
     out_path = dir_path + "/" + channel
@@ -128,7 +127,7 @@ async def downloadhistory(message, args, author, client) :
             limit_time = datetime.datetime.utcfromtimestamp(int(float(lt.read())))
 
     start_time = time.time()
-    log_data = message.channel.history(after=limit_time)
+    log_data = message.channel.history(limit=999999999999999,after=limit_time)
     hist_out = open(out_path, 'a')
     data_out = []
     async for log in log_data :
