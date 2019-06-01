@@ -142,5 +142,5 @@ if __name__ == '__main__' :
 	#this is where you can generate text inside this file
 	#just make either a personal chain or a generic chain and load from a correct path
 	bee_movie = markov_chain()
-	bee_movie.load_markov("bot-data/beemovie.txt")
+	bee_movie.load_markov("bot-data/136984919875387393/general")
 	print(bee_movie.make_sentence())

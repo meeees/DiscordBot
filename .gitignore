@@ -1,5 +1,6 @@
 __pycache__
-bot-data
+bot-data/*
 token.txt
 admins.txt
+!bot-data/rock_facts.txt
 *.pyc

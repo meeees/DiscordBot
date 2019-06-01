@@ -39,7 +39,7 @@ class bot_cmd:
             cmdlst = importlib.reload(cmdlst)
             client.cmd_list = init_commands()
             print ('Reloaded commands')
-            await client.send_message(message.channel, 'Reloaded command functionality')
+            await message.channel.send('Reloaded command functionality')
             return
         await self.run(message, args, author, client)
 
@@ -51,7 +51,7 @@ class bot_cmd:
         if self.lvl == cmd_lvl.admins :
             return type(user) is discord.member.Member and user.top_role.permissions.administrator
         if self.lvl == cmd_lvl.bot_admins :
-            return user.id in client.bot_admins
+            return str(user.id) in client.bot_admins
             
 
 def find_command(message, client):
@@ -70,12 +70,14 @@ def init_commands() :
     cmds.append(bot_cmd("!noise", cmdlst.noise, 1, 'Generate 20 random letters'))
     cmds.append(bot_cmd("!deleteme", cmdlst.deleteme, cmd_lvl.mods, 'Delete all messages from the bot, use -s to not get feedback'))
     cmds.append(bot_cmd("!deletecmds", cmdlst.deletecmds, 1, 'Delete all command messages written by the user'))
+    cmds.append(bot_cmd("!deleteallcmds", cmdlst.deleteallcmds, cmd_lvl.mods, 'Delete all command messages written by anyone'))
     cmds.append(bot_cmd("!join", cmdlst.join, cmd_lvl.admins, 'Join the voice channel the user is in'))
     cmds.append(bot_cmd("!leave", cmdlst.leave, cmd_lvl.admins, 'Leave whatever voice channel the bot is in'))
     cmds.append(bot_cmd("!killme", cmdlst.endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'))
     cmds.append(bot_cmd("!downloadchat", cmdlst.downloadhistory, cmd_lvl.bot_admins, 'Downloads chat history since the last download in the current channel'))
     cmds.append(bot_cmd("!rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
     cmds.append(bot_cmd("!flip", cmdlst.coinflip, 1, 'Flip a coin with cryptographically secure randomness!'))
+    cmds.append(bot_cmd("!roulette", cmdlst.roulette, 1, 'Test your luck!'))
                 
     return cmds
 
