@@ -3,6 +3,7 @@ import asyncio
 import os, datetime, time, base64
 from random import randint, SystemRandom
 import facts
+from bot_markov import bot_markov_chain
 
 async def ping(message, args, author, client) :
     await message.channel.send('Pong!')
@@ -112,6 +113,17 @@ async def roulette(message, args, author, client) :
     else :
         await message.channel.send('You must be in a voice channel to play')
 
+async def markov(message, args, author, client) :
+    if (not hasattr(client, 'markov_chains')) or client.markov_chains == None :
+        tmp = await message.channel.send("Generating markov chains, please wait...")
+        client.markov_chains = bot_markov_chain(True)
+        client.markov_chains.load_markov('bot-data/136984919875387393/general')
+        await tmp.delete()
+    sentence = client.markov_chains.make_sentence()
+    # we want sentences with at least 3 words
+    while (sentence.count(' ') < 2) :
+        sentence = client.markov_chains.make_sentence()
+    await message.channel.send(sentence)
 
 async def downloadhistory(message, args, author, client) :
     channel = message.channel.name

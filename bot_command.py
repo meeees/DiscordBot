@@ -37,7 +37,7 @@ class bot_cmd:
         if(self.cmd == '!reload') :
             global cmdlst
             cmdlst = importlib.reload(cmdlst)
-            client.cmd_list = init_commands()
+            client.cmd_list = init_commands(client)
             print ('Reloaded commands')
             await message.channel.send('Reloaded command functionality')
             return
@@ -61,7 +61,7 @@ def find_command(message, client):
             return cmd
     return None
         
-def init_commands() :
+def init_commands(client) :
     cmds = []
 
     cmds.append(bot_cmd("!reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
@@ -78,6 +78,8 @@ def init_commands() :
     cmds.append(bot_cmd("!rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
     cmds.append(bot_cmd("!flip", cmdlst.coinflip, 1, 'Flip a coin with cryptographically secure randomness!'))
     cmds.append(bot_cmd("!roulette", cmdlst.roulette, 1, 'Test your luck!'))
-                
+    cmds.append(bot_cmd("!markov", cmdlst.markov, 1, 'Generate a random sentence based on the current markov data (set by admins)'))
+    client.markov_chains = None
+
     return cmds
 

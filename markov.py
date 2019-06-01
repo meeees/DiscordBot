@@ -123,7 +123,7 @@ class personal_markov_chain :
 				data = line.split(' ')
 				name = base64.b64decode(data[0]).decode('utf-16').lower()
 				#whether texts cares about lower case or not
-				content = base64.b64decode(data[1]).decode('utf-16').lower().split("\n")
+				content = base64.b64decode(data[1]).decode('utf-16').split("\n")
 				#content = base64.b64decode(data[1]).decode('utf-16').split("\n")
 				if not name in self.names :
 					continue
@@ -141,6 +141,10 @@ class personal_markov_chain :
 if __name__ == '__main__' :
 	#this is where you can generate text inside this file
 	#just make either a personal chain or a generic chain and load from a correct path
-	bee_movie = markov_chain()
+	bee_movie = personal_markov_chain([''], True)
 	bee_movie.load_markov("bot-data/136984919875387393/general")
-	print(bee_movie.make_sentence())
+	for x in range(0, 100) :
+		try :
+			print (bee_movie.generate_for(''))
+		except :
+			x -= 1

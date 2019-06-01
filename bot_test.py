@@ -11,7 +11,7 @@ if not discord.opus.is_loaded():
     discord.opus.load_opus('opus')
 
 client = discord.Client()
-client.cmd_list = botcmd.init_commands()
+client.cmd_list = botcmd.init_commands(client)
 botcmd.client = client
 
 @client.event
