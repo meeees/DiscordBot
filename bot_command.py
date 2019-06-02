@@ -54,12 +54,17 @@ class bot_cmd:
             return str(user.id) in client.bot_admins
             
 
-def find_command(message, client):
-    test = message.content.lower()
+def find_command(command, client):
+    test = command.lower()
     for cmd in client.cmd_list :
-        if test.startswith(cmd.cmd) :
+        if test == cmd.cmd :
             return cmd
     return None
+
+def parse_command(message) :
+    # TODO: support string arguments
+    tmp = message.content.split(' ')
+    return (tmp[0],tmp[1:])
         
 def init_commands(client) :
     cmds = []
@@ -79,7 +84,9 @@ def init_commands(client) :
     cmds.append(bot_cmd("!flip", cmdlst.coinflip, 1, 'Flip a coin with cryptographically secure randomness!'))
     cmds.append(bot_cmd("!roulette", cmdlst.roulette, 1, 'Test your luck!'))
     cmds.append(bot_cmd("!markov", cmdlst.markov, 1, 'Generate a random sentence based on the current markov data (set by admins)'))
+    cmds.append(bot_cmd("!markovusers", cmdlst.markovusers, 1, 'Get sent a list of markov users'))
     client.markov_chains = None
+    client.named_markov_chains = None
 
     return cmds
 

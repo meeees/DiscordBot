@@ -55,6 +55,8 @@ class markov_chain :
 		s_words = sentence.split(' ')
 		if self.two :
 			for w in s_words :
+				if w == '' :
+					continue
 				self.words[(prev2, prev)].train(w)
 				if (prev, w) not in self.words :
 					self.words[(prev, w)] = markov_word()
@@ -64,6 +66,8 @@ class markov_chain :
 			self.words[(prev2, prev)].train('')
 		else :
 			for w in s_words :
+				if w == '' :
+					continue
 				self.words[prev].train(w)
 				if w not in self.words :
 					self.words[w] = markov_word()
@@ -76,13 +80,30 @@ class markov_chain :
 		for w in self.words :
 			self.words[w].compute_probabilities()
 
-	def make_sentence(self) :
+		"""lst = self.get_base_word().sorted_words
+		for i in range(0, len(lst)) :
+			try :
+				print (lst[i])
+			except :
+				pass"""
+
+	def make_sentence(self, start=None) :
 		res = []
-		if self.two :
-			nxt = self.words[('','')]
+		if start != None :
+			if start in self.get_base_word().sorted_words :
+				if self.two :
+					nxt = self.words[('', start)]
+				else :
+					nxt = self.words[start]
+				res.append(start)
+			else :
+				raise Exception('start was not none but not in the base words')
 		else :
-			nxt = self.words['']
-		prevwd = ''
+			if self.two :
+				nxt = self.words[('','')]
+			else :
+				nxt = self.words['']
+		prevwd = '' if start == None else start
 		while True :
 			new_nxt = nxt.get_next()
 			if new_nxt == None or new_nxt == '':
@@ -104,6 +125,11 @@ class markov_chain :
 					self.train(line[:-1].lower())
 		self.compute()
 
+	def get_base_word(self) :
+		if self.two :
+			return self.words[('','')]
+		else :
+			return self.words['']
 
 #if we want to pull chains for multiple people from the same data
 class personal_markov_chain :
@@ -111,6 +137,7 @@ class personal_markov_chain :
 	def __init__(self, names, two = False) :
 		self.names = names
 		self.chains = {}
+		self.two = two
 		for n in names :
 			self.chains[n] = markov_chain(two)
 

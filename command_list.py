@@ -3,7 +3,7 @@ import asyncio
 import os, datetime, time, base64
 from random import randint, SystemRandom
 import facts
-from bot_markov import bot_markov_chain
+from bot_markov import named_bot_markov_chain, bot_markov_chain
 
 async def ping(message, args, author, client) :
     await message.channel.send('Pong!')
@@ -15,10 +15,10 @@ async def deleteme(message, args, author, client) :
     counter = 0
     tmp = await message.channel.send('Finding messages...')
     # bulk delete only works on messages in the last 2 weeks, so we just grab messages from the last 24 hours
-    day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
+    day_ago = datetime.datetime.utcnow() - datetime.timedelta(days=1)
     to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.author.id == client.user.id and m.id != tmp.id).flatten()
     await message.channel.delete_messages(to_del)
-    if message.content.endswith('-s') :
+    if len(args) > 0 and args[0] == '-s' :
         await tmp.delete()
         await message.delete()
     else :
@@ -31,10 +31,10 @@ async def deletecmds(message, args, author, client) :
     counter = 0
     tmp = await message.channel.send('Finding messages...')
     # bulk delete only works on messages in the last 2 weeks, so we just grab messages from the last 24 hours
-    day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
+    day_ago = datetime.datetime.utcnow() - datetime.timedelta(days=1)
     to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.content.startswith('!') and m.author.id == message.author.id).flatten()
     await message.channel.delete_messages(to_del)
-    if message.content.endswith('-s') :
+    if len(args) > 0 and args[0] == '-s' :
         await tmp.delete()
     else :
         await tmp.edit(content = 'Deleted {} command messages from you.'.format(len(to_del)))
@@ -45,11 +45,11 @@ async def deleteallcmds(message, args, author, client) :
         return
     counter = 0
     # bulk delete only works on messages in the last 2 weeks, so we just grab messages from the last 24 hours
-    day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
+    day_ago = datetime.datetime.utcnow() - datetime.timedelta(days=1)
     tmp = await message.channel.send('Finding messages...')
-    to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.conent.startswith('!')).flatten()
+    to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.content.startswith('!')).flatten()
     await message.channel.delete_messages(to_del)
-    if message.content.endswith('-s') :
+    if len(args) > 0 and args[0] == '-s' :
         await tmp.delete()
     else :
         await tmp.edit(content = 'Deleted {} command messages.'.format(len(to_del)))
@@ -114,16 +114,50 @@ async def roulette(message, args, author, client) :
         await message.channel.send('You must be in a voice channel to play')
 
 async def markov(message, args, author, client) :
-    if (not hasattr(client, 'markov_chains')) or client.markov_chains == None :
-        tmp = await message.channel.send("Generating markov chains, please wait...")
-        client.markov_chains = bot_markov_chain(True)
-        client.markov_chains.load_markov('bot-data/136984919875387393/general')
-        await tmp.delete()
-    sentence = client.markov_chains.make_sentence()
-    # we want sentences with at least 3 words
-    while (sentence.count(' ') < 2) :
+    #print (args)
+    if len(args) == 0 :
+        if (not hasattr(client, 'markov_chains')) or client.markov_chains == None :
+            tmp = await message.channel.send("Generating markov chains, please wait...")
+            client.markov_chains = bot_markov_chain(True)
+            client.markov_chains.load_markov('bot-data/136984919875387393/general')
+            await tmp.delete()
         sentence = client.markov_chains.make_sentence()
-    await message.channel.send(sentence)
+        # we want sentences with at least 3 words
+        tries = 0
+        while (sentence.count(' ') < 3) :
+            tries += 1
+            if tries == 6 :
+                break
+            sentence = client.markov_chains.make_sentence()
+        await message.channel.send(sentence)
+    else :
+        if (not hasattr(client, 'named_markov_chains')) or client.named_markov_chains == None :
+            tmp = await message.channel.send("Generating named markov chains, please wait...")
+            client.named_markov_chains = named_bot_markov_chain(True)
+            client.named_markov_chains.load_markov('bot-data/136984919875387393/general')
+            await tmp.delete()
+        try :
+            sentence = args[0] + ': ' + client.named_markov_chains.generate_for(args[0])
+        except :
+            await message.channel.send("Username not found in markov chains!")
+            return
+        tries = 0
+        while (sentence.count(' ') < 3) :
+            tries += 1
+            if tries == 6 :
+                break
+            sentence = args[0] + ': ' + client.named_markov_chains.generate_for(args[0])
+        await message.channel.send(sentence)
+
+
+
+async def markovusers(message, args, author, client) :
+    if not hasattr(client, 'named_markov_chains') or client.named_markov_chains == None :
+        await message.channel.send("Named markov chains have not been generated, use !markov [name]")
+        return
+    if author.dm_channel == None :
+        await author.create_dm()
+    await author.dm_channel.send('```\n' + '\n'.join(client.named_markov_chains.chains.keys()) + '\n```')
 
 async def downloadhistory(message, args, author, client) :
     channel = message.channel.name

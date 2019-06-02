@@ -26,9 +26,10 @@ async def on_message(message):
     #we don't want to act on other bots
     if message.author.bot:
         return
-    msgCmd = botcmd.find_command(message, client)
+    msgArgs = botcmd.parse_command(message)
+    msgCmd = botcmd.find_command(msgArgs[0], client)
     if msgCmd:
-        await msgCmd.execute(message, '', message.author, client)
+        await msgCmd.execute(message, msgArgs[1], message.author, client)
 
 with open('bot-data/token.txt', 'r') as f:
     token = f.read()
