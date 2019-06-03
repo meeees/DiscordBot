@@ -55,12 +55,8 @@ class bot_markov_chain(markov_chain) :
 
 	@staticmethod
 	def remove_mentions(text):
-		match = re.search('<@[0-9]+>', text)
-		while match != None :
-			text = text[:match.start()] + '-' + text[match.start()+1:match.end()-1] + '-' + text[match.end():]
-			match = re.search('<@[0-9]+>', text)
-		return text
-
+  		return re.sub(r"<(@[0-9]+)>", r"-\1-", text)
+	
 	def make_sentence(self, start=None) :
 			return bot_markov_chain.remove_mentions(super().make_sentence(start))
 
