@@ -35,7 +35,7 @@ class bot_cmd:
             return
         #special check here to see if we need to reload the commands
         #this only reloads functionality, to add more commands the entire bot must be restarted for now
-        if(self.cmd == '!reload') :
+        if(self.cmd == 'reload') :
             global cmdlst
             cmdlst = importlib.reload(cmdlst)
             client.cmd_list = init_commands(client)
@@ -56,6 +56,8 @@ class bot_cmd:
             
 
 def find_command(command, client):
+    if (command.startswith('.')):
+        command = command[1:]
     test = command.lower()
     for cmd in client.cmd_list :
         if test == cmd.cmd :
@@ -99,8 +101,8 @@ def load_plugins():
 def init_commands(client):
     cmds = []
 
-    cmds.append(bot_cmd("!reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
-    cmds.append(bot_cmd("!rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
+    cmds.append(bot_cmd("reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
+    cmds.append(bot_cmd("rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
     
     client.markov_chains = None
     client.named_markov_chains = None

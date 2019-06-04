@@ -42,5 +42,5 @@ async def downloadhistory(message, args, author, client) :
     await message.channel.send('Finished downloading all new messages in channel')
 
 log_cmds = [
-    bot_cmd("!downloadchat", downloadhistory, cmd_lvl.bot_admins, 'Downloads chat history since the last download in the current channel'),
+    bot_cmd("downloadchat", downloadhistory, cmd_lvl.bot_admins, 'Downloads chat history since the last download in the current channel'),
 ]

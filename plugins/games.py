@@ -23,6 +23,6 @@ async def roulette(message, args, author, client) :
         await message.channel.send('You must be in a voice channel to play')
 
 game_cmds = [
-	bot_cmd("!flip", coinflip, 1, 'Flip a coin with cryptographically secure randomness!'),
-    bot_cmd("!roulette", roulette, 1, 'Test your luck!'),
+	bot_cmd("flip", coinflip, 1, 'Flip a coin with cryptographically secure randomness!'),
+    bot_cmd("roulette", roulette, 1, 'Test your luck!'),
 ]
