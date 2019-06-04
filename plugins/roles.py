@@ -45,6 +45,6 @@ async def cleanup_color_roles(message, args, author, client):
 
 
 role_cmds = [
-	bot_cmd("color", color_role, 1, 'Change your current color'),
+	bot_cmd("color", color_role, 1, 'Change your current color (see https://www.colorhexa.com/color-names)'),
 	bot_cmd("color_cleanup", cleanup_color_roles, 3, 'Cleans up unused color roles'),
 ]
