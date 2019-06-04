@@ -56,7 +56,7 @@ class bot_cmd:
             
 
 def find_command(command, client):
-    if (command.startswith('.')):
+    if (command.startswith('!')):
         command = command[1:]
     test = command.lower()
     for cmd in client.cmd_list :
