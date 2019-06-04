@@ -4,6 +4,7 @@ import command_list as cmdlst
 import sys
 import importlib
 import mtg_card_cmd
+import os
 
 from enum import Enum
 
@@ -66,8 +67,37 @@ def parse_command(message) :
     # TODO: support string arguments
     tmp = message.content.split(' ')
     return (tmp[0],tmp[1:])
+
+_loaded_modules = {}
+def load_plugins():
+    sys.path.append(sys.path[0] + '/plugins')
+    #print(sys.path)
+    index = 0
+    path = sys.path[0] + '/plugins'
+    files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    def recurse_obj(obj):
+        lst = []
+        if (isinstance(obj, bot_cmd)):
+            return [obj]
+        elif (isinstance(obj, list)):
+            for x in obj:
+                lst += recurse_obj(x)
+        return lst
+
+    for f in files:
+        module = __import__(f[0:-3])
+        commands = []
         
-def init_commands(client) :
+        for x in dir(module):
+            obj = getattr(module, x)
+            commands += recurse_obj(obj)
+
+        _loaded_modules['%s' % f] = (module, commands)
+
+    return _loaded_modules
+
+def init_commands(client):
     cmds = []
 
     cmds.append(bot_cmd("!reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
@@ -89,6 +119,11 @@ def init_commands(client) :
     client.markov_chains = None
     client.named_markov_chains = None
     cmds.append(bot_cmd("!cardboard", mtg_card_cmd.mtgcard, 1, 'Search for a piece of cardboard by name'))
+
+    modules = load_plugins()
+    for m in modules.keys():
+        _m, _cmds = modules[m]
+        cmds += _cmds
 
     return cmds
 
