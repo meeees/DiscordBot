@@ -100,7 +100,6 @@ def init_commands(client):
     cmds = []
 
     cmds.append(bot_cmd("!reload", None, cmd_lvl.bot_admins, 'Reload the functionality of the commands'))
-    cmds.append(bot_cmd("!killme", cmdlst.endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'))
     cmds.append(bot_cmd("!rock", cmdlst.rockfact, 1, 'Say a random rock fact!'))
     
     client.markov_chains = None
