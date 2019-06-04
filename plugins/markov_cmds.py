@@ -51,6 +51,6 @@ async def markovusers(message, args, author, client) :
     await author.dm_channel.send('```\n' + '\n'.join(client.named_markov_chains.chains.keys()) + '\n```')
 
 markov_cmds = [
-    bot_cmd("!markov", markov, 1, 'Generate a random sentence based on the current markov data (set by admins)'),
-    bot_cmd("!markovusers", markovusers, 1, 'Get sent a list of markov users')
+    bot_cmd("markov", markov, 1, 'Generate a random sentence based on the current markov data (set by admins)'),
+    bot_cmd("markovusers", markovusers, 1, 'Get sent a list of markov users')
 ]

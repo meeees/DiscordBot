@@ -23,4 +23,4 @@ if __name__ == '__main__' :
 	print (response.json()['image_uris']['large'])
 
 
-_command = bot_cmd("!cardboard", mtgcard, 1, 'Search for a piece of cardboard by name')
+_command = bot_cmd("cardboard", mtgcard, 1, 'Search for a piece of cardboard by name')

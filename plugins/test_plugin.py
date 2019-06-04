@@ -8,7 +8,7 @@ async def ding(message, args, author, client) :
     await message.channel.send('Dong!')
 
 # All the shit here will be put into the command list
-__ = bot_cmd("!ding", ding, 1, 'If I\'m alive I will say Dong!')
+__ = bot_cmd("ding", ding, 1, 'If I\'m alive I will say Dong!')
 
 # This too
 #other_cmd_list = [bot_cmd("!ding1", ding, 1, 'If I\'m alive I will say Dong!'),

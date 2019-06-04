@@ -3,4 +3,5 @@ bot-data/*
 token.txt
 admins.txt
 !bot-data/rock_facts.txt
+!bot-data/colors.txt
 *.pyc

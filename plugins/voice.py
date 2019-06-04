@@ -22,6 +22,6 @@ async def leave(message, args, author, client) :
         await vClient.disconnect()
 
 voice_cmds = [
-	bot_cmd("!join", join, cmd_lvl.admins, 'Join the voice channel the user is in'),
-    bot_cmd("!leave", leave, cmd_lvl.admins, 'Leave whatever voice channel the bot is in'),
+	bot_cmd("join", join, cmd_lvl.admins, 'Join the voice channel the user is in'),
+    bot_cmd("leave", leave, cmd_lvl.admins, 'Leave whatever voice channel the bot is in'),
 ]

@@ -53,7 +53,7 @@ async def deleteallcmds(message, args, author, client) :
     else :
         await tmp.edit(content = 'Deleted {} command messages.'.format(len(to_del)))
 
-async def help(message, args, author, client) :
+async def _help(message, args, author, client) :
     helpList = []
     await message.channel.send('Okay {}, sending you help, check your PMs!'.format(author.name))
     for cmd in client.cmd_list :
@@ -69,11 +69,11 @@ async def endbot(message, args, author, client) :
     await client.logout()
 
 util_cmds = [
-	bot_cmd("!help", help, 1, 'Show a user all the commands they can use'),
-    bot_cmd("!ping", ping, 1, 'If I\'m alive I will say Pong!'),
-    bot_cmd("!noise", noise, 1, 'Generate 20 random letters'),
-    bot_cmd("!deleteme", deleteme, cmd_lvl.mods, 'Delete all messages from the bot, use -s to not get feedback'),
-    bot_cmd("!deletecmds", deletecmds, 1, 'Delete all command messages written by the user'),
-    bot_cmd("!deleteallcmds", deleteallcmds, cmd_lvl.mods, 'Delete all command messages written by anyone'),
-    bot_cmd("!killme", endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'),
+	bot_cmd("help", _help, 1, 'Show a user all the commands they can use'),
+    bot_cmd("ping", ping, 1, 'If I\'m alive I will say Pong!'),
+    bot_cmd("noise", noise, 1, 'Generate 20 random letters'),
+    bot_cmd("deleteme", deleteme, cmd_lvl.mods, 'Delete all messages from the bot, use -s to not get feedback'),
+    bot_cmd("deletecmds", deletecmds, 1, 'Delete all command messages written by the user'),
+    bot_cmd("deleteallcmds", deleteallcmds, cmd_lvl.mods, 'Delete all command messages written by anyone'),
+    bot_cmd("killme", endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'),
 ]
