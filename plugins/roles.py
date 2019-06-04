@@ -31,8 +31,20 @@ async def color_role(message, args, author, client):
 		await message.author.remove_roles(*to_remove)
 		await message.author.add_roles(role)
 	else:
-		await message.channel.send('Color doesn\' exist in list!')
+		await message.channel.send('Color doesn\'t exist in list!')
+
+async def cleanup_color_roles(message, args, author, client):
+	color_roles = dict((x,0) for x in message.guild.roles if x.name.startswith('color_'))
+	for u in message.guild.members:
+		for r in u.roles:
+			if r.name.startswith('color_'):
+				color_roles[r] += 1
+	to_remove = [x for x in color_roles.keys() if color_roles[x] == 0]
+	for r in to_remove:
+		await r.delete(reason='unused')
+
 
 role_cmds = [
 	bot_cmd("color", color_role, 1, 'Change your current color'),
+	bot_cmd("color_cleanup", cleanup_color_roles, 3, 'Cleans up unused color roles'),
 ]
