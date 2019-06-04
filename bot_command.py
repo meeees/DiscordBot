@@ -3,6 +3,7 @@ import asyncio
 import command_list as cmdlst
 import sys
 import importlib
+import mtg_card_cmd
 
 from enum import Enum
 
@@ -87,6 +88,7 @@ def init_commands(client) :
     cmds.append(bot_cmd("!markovusers", cmdlst.markovusers, 1, 'Get sent a list of markov users'))
     client.markov_chains = None
     client.named_markov_chains = None
+    cmds.append(bot_cmd("!cardboard", mtg_card_cmd.mtgcard, 1, 'Search for a piece of cardboard by name'))
 
     return cmds
 
