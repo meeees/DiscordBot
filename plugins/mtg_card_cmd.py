@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import requests as re
+from bot_command import *
 
 async def mtgcard(message, args, author, client) :
 	if len(args) == 0 :
@@ -20,3 +21,6 @@ if __name__ == '__main__' :
 	url = 'https://api.scryfall.com/cards/named?fuzzy=' + name
 	response = re.get(url)
 	print (response.json()['image_uris']['large'])
+
+
+_command = bot_cmd("!cardboard", mtgcard, 1, 'Search for a piece of cardboard by name')
