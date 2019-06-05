@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import bot_command as botcmd
+import bot_settings as settings
 
 if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
@@ -31,11 +32,7 @@ async def on_message(message):
     if msgCmd:
         await msgCmd.execute(message, msgArgs[1], message.author, client)
 
-with open('bot-data/token.txt', 'r') as f:
-    token = f.read()
-
-with open('bot-data/admins.txt', 'r') as f:
-    #list of all the bot admins by userid
-    client.bot_admins = f.read().split('\n')
-
+client.settings = settings.bot_settings('bot-data/settings.json')
+token = client.settings.get_val('token')
+client.bot_admins = client.settings.get_val('admins')
 client.run(token)

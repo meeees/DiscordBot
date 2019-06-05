@@ -1,0 +1,5 @@
+{
+"token":"PUT TOKEN HERE",
+"admins":["PUT ADMIN IDS HERE"],
+"cmd_prefix":"!"
+}

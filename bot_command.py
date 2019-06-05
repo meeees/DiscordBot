@@ -56,8 +56,9 @@ class bot_cmd:
             
 
 def find_command(command, client):
-    if (command.startswith('!')):
-        command = command[1:]
+    prefix = client.settings.get_val('cmd_prefix')
+    if (command.startswith(prefix)):
+        command = command[len(prefix):]
     test = command.lower()
     for cmd in client.cmd_list :
         if test == cmd.cmd :
