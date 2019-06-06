@@ -28,11 +28,11 @@ class bot_settings :
 			self.save_settings()
 
 	def save_settings(self) :
-		with open(self.path) as f :
+		with open(self.path, 'w') as f :
 			json.dump(self.settings, f)
 
 	def save_default_settings(self) :
 		print ("Saving default bot settings, please configure them")
 		with open(self.default_settings_path) as f :
-			with open(self.path) as f2 :
+			with open(self.path, 'w') as f2 :
 				f2.write(f.read())
