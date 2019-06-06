@@ -36,3 +36,4 @@ client.settings = settings.bot_settings('bot-data/settings.json')
 token = client.settings.get_val('token')
 client.bot_admins = client.settings.get_val('admins')
 client.run(token)
+#comment
