@@ -2,6 +2,10 @@
 
 I'm writing a simple discord bot using the [discord.py](https://github.com/Rapptz/discord.py) API written by [Rapptz](https://github.com/Rapptz).
 
+### Setup
+
+All required python packages are listed in requirements.txt, these can be installed with `pip3 install -r requirements.txt`
+
 ### Current State
 
 Right now all I have done is implemented a few basic commands and made the command system modular so it is easy to add new commands. I know there is a system similar to this already existing in the API, but this is more for me to just program something rather than for practical uses.
