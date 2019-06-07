@@ -23,6 +23,18 @@ async def on_ready():
     print('------')
 
 @client.event
+async def on_message_delete(message) :
+    if client.log_deleted :
+        if message.channel.guild != None and not message.author.bot :
+            await message.channel.guild.get_channel(int(client.admin_channel_id)).send("Deleted Message: " + message.author.mention + "\n" + message.content)
+
+@client.event
+async def on_message_edit(before, after) :
+    if client.log_edited :
+        if before.channel.guild != None and not before.author.bot :
+            await before.channel.guild.get_channel(int(client.admin_channel_id)).send("Edited Message: " + before.author.mention + "\n" + before.content + "\n->\n" + after.content)
+
+@client.event
 async def on_message(message):
     #we don't want to act on other bots
     if message.author.bot:
@@ -35,4 +47,7 @@ async def on_message(message):
 client.settings = settings.bot_settings('bot-data/settings.json')
 token = client.settings.get_val('token')
 client.bot_admins = client.settings.get_val('admins')
+client.admin_channel_id = client.settings.get_val('admin_channel')
+client.log_deleted = client.settings.get_val('log_deleted')
+client.log_edited = client.settings.get_val('log_edited')
 client.run(token)

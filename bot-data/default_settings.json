@@ -2,4 +2,7 @@
 "token":"PUT TOKEN HERE",
 "admins":["PUT ADMIN IDS HERE"],
 "cmd_prefix":"!"
+"log_deleted":false,
+"log_edited":false,
+"admin_channel":"Put admin channel here"
 }

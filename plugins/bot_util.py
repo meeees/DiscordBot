@@ -31,7 +31,8 @@ async def deletecmds(message, args, author, client) :
     tmp = await message.channel.send('Finding messages...')
     # bulk delete only works on messages in the last 2 weeks, so we just grab messages from the last 24 hours
     day_ago = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-    to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.content.startswith('!') and m.author.id == message.author.id).flatten()
+    prefix = client.settings.get_val('cmd_prefix')
+    to_del = await message.channel.history(limit=100, after=day_ago).filter(lambda m: m.content.startswith(prefix) and m.author.id == message.author.id).flatten()
     await message.channel.delete_messages(to_del)
     if len(args) > 0 and args[0] == '-s' :
         await tmp.delete()
