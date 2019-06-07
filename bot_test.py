@@ -27,14 +27,14 @@ async def on_message_delete(message) :
     if client.log_deleted :
         if message.channel.guild != None and not message.author.bot :
             text = "Deleted Message: " + message.author.mention + " in: " + message.channel.mention + "\n" + message.content
-            await message.channel.guild.get_channel(int(client.admin_channel_id)).send()
+            await message.channel.guild.get_channel(int(client.admin_channel_id)).send(text)
 
 @client.event
 async def on_message_edit(before, after) :
     if client.log_edited :
         if before.channel.guild != None and not before.author.bot :
-            text = "Edited Message: " + before.author.mention + " in: " + message.channel.mention + "\n" + before.content + "\n->\n" + after.content
-            await before.channel.guild.get_channel(int(client.admin_channel_id)).send()
+            text = "Edited Message: " + before.author.mention + " in: " + before.channel.mention + "\n" + before.content + "\n->\n" + after.content
+            await before.channel.guild.get_channel(int(client.admin_channel_id)).send(text)
 
 @client.event
 async def on_message(message):
