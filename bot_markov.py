@@ -26,7 +26,7 @@ class named_bot_markov_chain(personal_markov_chain) :
 	def generate_for(self, name) :
 		if not name in self.chains :
 			raise Exception('Username not found!')
-		return bot_markov_chain.remove_mentions(super().generate_for(name))
+		return super().generate_for(name)
 
 	def make_sentence(self) :
 		key = list(self.chains.keys())[random.randint(0, len(self.chains))]
@@ -58,7 +58,7 @@ class bot_markov_chain(markov_chain) :
   		return re.sub(r"<(@[0-9]+)>", r"-\1-", text)
 	
 	def make_sentence(self, start=None) :
-			return bot_markov_chain.remove_mentions(super().make_sentence(start))
+			return super().make_sentence(start)
 
 
 if __name__ == '__main__' :

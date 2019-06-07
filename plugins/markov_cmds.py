@@ -20,7 +20,7 @@ async def markov(message, args, author, client) :
             if tries == 6 :
                 break
             sentence = client.markov_chains.make_sentence()
-        await message.channel.send(sentence)
+        await message.channel.send(discord.utils.escape_mentions(sentence))
     else :
         if (not hasattr(client, 'named_markov_chains')) or client.named_markov_chains == None :
             tmp = await message.channel.send("Generating named markov chains, please wait...")
@@ -38,7 +38,7 @@ async def markov(message, args, author, client) :
             if tries == 6 :
                 break
             sentence = args[0] + ': ' + client.named_markov_chains.generate_for(args[0])
-        await message.channel.send(sentence)
+        await message.channel.send(discord.utils.escape_mentions(sentence))
 
 
 
