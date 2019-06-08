@@ -32,7 +32,7 @@ async def on_message_delete(message) :
 @client.event
 async def on_message_edit(before, after) :
     if client.log_edited :
-        if before.channel.guild != None and not before.author.bot :
+        if before.channel.guild != None and not before.author.bot and before.content != after.content :
             text = "Edited Message: " + before.author.mention + " in: " + before.channel.mention + "\n" + before.content + "\n->\n" + after.content
             await before.channel.guild.get_channel(int(client.admin_channel_id)).send(text)
 
