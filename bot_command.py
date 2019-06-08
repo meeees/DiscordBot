@@ -6,6 +6,7 @@ import importlib
 import os
 
 from enum import Enum
+from random import randint, SystemRandom
 
 client = None
 
@@ -41,6 +42,11 @@ class bot_cmd:
             client.cmd_list = init_commands(client)
             print ('Reloaded commands')
             await message.channel.send('Reloaded command functionality')
+            return
+        # if a peasant executes a command, the bot might not comply.
+        if self.lvl == cmd_lvl.everyone and not str(author.id) in client.bot_admins \
+            and SystemRandom().randint(1, 10) == 1 :
+            await message.channel.send('I refuse to comply.')
             return
         await self.run(message, args, author, client)
 
