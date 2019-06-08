@@ -6,7 +6,7 @@ import importlib
 import os
 
 from enum import Enum
-from random import randint, SystemRandom
+from bot_refuse import refuse
 
 client = None
 
@@ -18,7 +18,6 @@ class cmd_lvl(Enum):
     bot_admins = 4
     
 class bot_cmd:
-    
     def __init__(self, cmd, run, lvl = cmd_lvl.everyone, desc = 'Default Description'):
         self.cmd = cmd.lower()
         self.run = run
@@ -44,10 +43,11 @@ class bot_cmd:
             await message.channel.send('Reloaded command functionality')
             return
         # if a peasant executes a command, the bot might not comply.
-        if self.lvl == cmd_lvl.everyone and not str(author.id) in client.bot_admins \
-            and SystemRandom().randint(1, 10) == 1 :
-            await message.channel.send('I refuse to comply.')
-            return
+        if self.lvl == cmd_lvl.everyone and refuse.think_about_refusing() :
+            # comment out this next line if bot admins want to play too
+            if not str(author.id) in client.bot_admins :
+                await refuse.send_refusal(message, args, author, client)
+                return
         await self.run(message, args, author, client)
 
     def has_perms(self, user) :
@@ -59,7 +59,7 @@ class bot_cmd:
             return type(user) is discord.member.Member and user.top_role.permissions.administrator
         if self.lvl == cmd_lvl.bot_admins :
             return str(user.id) in client.bot_admins
-            
+
 
 def find_command(command, client):
     prefix = client.settings.get_val('cmd_prefix')
