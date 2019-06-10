@@ -42,12 +42,14 @@ class bot_cmd:
             print ('Reloaded commands')
             await message.channel.send('Reloaded command functionality')
             return
-        # if a peasant executes a command, the bot might not comply.
+        #only admins may change refusalLevel of bot
+        if(self.cmd == 'refusallevel' and len(args) and not str(author.id) in client.bot_admins) :
+            return
+        #if a peasant-level command is executed, the bot might not comply.
         if self.lvl == cmd_lvl.everyone and refuse.think_about_refusing() :
-            # comment out this next line if bot admins want to play too
-            if not str(author.id) in client.bot_admins :
-                await refuse.send_refusal(message, args, author, client)
-                return
+            await refuse.send_refusal(message, args, author, client)
+            return
+        #else run given command
         await self.run(message, args, author, client)
 
     def has_perms(self, user) :

@@ -56,7 +56,7 @@ async def deleteallcmds(message, args, author, client) :
 
 async def _help(message, args, author, client) :
     helpList = []
-    await message.channel.send('Okay {}, sending you help, check your PMs!'.format(author.name))
+    await message.channel.send('Okay {}, sending you help. Check your PMs!'.format(author.name))
     for cmd in client.cmd_list :
         if cmd.has_perms(author) :
             helpList.append(str(cmd))
