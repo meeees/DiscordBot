@@ -43,10 +43,10 @@ class bot_cmd:
             await message.channel.send('Reloaded command functionality')
             return
         #only admins may change refusalLevel of bot
-        if(self.cmd == 'refusallevel' and len(args) and not str(author.id) in client.bot_admins) :
+        if(self.cmd == 'refusallevel' and len(args) > 0 and not str(author.id) in client.bot_admins) :
             return
         #if a peasant-level command is executed, the bot might not comply.
-        if self.lvl == cmd_lvl.everyone and refuse.think_about_refusing() :
+        if self.lvl == cmd_lvl.everyone and len(args) == 0 and refuse.think_about_refusing() :
             await refuse.send_refusal(message, args, author, client)
             return
         #else run given command
