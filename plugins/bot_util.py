@@ -69,6 +69,9 @@ async def endbot(message, args, author, client) :
     print ("Ending due to command from {}".format(author.name))
     await client.logout()
 
+async def complain(message, args, author, client) :
+    await message.channel.send('Your complaint has been noted.')
+
 util_cmds = [
 	bot_cmd("help", _help, 1, 'Show a user all the commands they can use'),
     bot_cmd("ping", ping, 1, 'If I\'m alive I will say Pong!'),
@@ -77,4 +80,5 @@ util_cmds = [
     bot_cmd("deletecmds", deletecmds, 1, 'Delete all command messages written by the user'),
     bot_cmd("deleteallcmds", deleteallcmds, cmd_lvl.mods, 'Delete all command messages written by anyone'),
     bot_cmd("killme", endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'),
+    bot_cmd("complain", complain, 1, "File a complaint about the server")
 ]
