@@ -24,7 +24,7 @@ async def roulette(message, args, author, client) :
 
 async def leaderboard(message, args, author, client) :
     # print full leaderboard
-    points = sorted(client.user_points.items(), key = lambda kv:(kv[1], kv[0]))
+    points = sorted(client.user_points.items(), key = lambda kv:(kv[1], kv[0]))[::-1]
     # 32 is magic number because why not?
     lines = [message.guild.get_member(points[n][0]).display_name.ljust(32) + str(points[n][1]).rjust(10) for n in range(0, len(points))]
     await message.channel.send('Points do not persist between restarts, Soon\U00002122')
