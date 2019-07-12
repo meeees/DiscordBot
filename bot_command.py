@@ -86,6 +86,7 @@ def parse_command(message) :
 
 _loaded_modules = {}
 def load_plugins():
+    importlib.invalidate_caches()
     sys.path.append(sys.path[0] + '/plugins')
     #print(sys.path)
     index = 0
