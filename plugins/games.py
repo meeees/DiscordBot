@@ -22,7 +22,23 @@ async def roulette(message, args, author, client) :
     else :
         await message.channel.send('You must be in a voice channel to play')
 
+async def leaderboard(message, args, author, client) :
+    # print full leaderboard
+    points = sorted(client.user_points.items(), key = lambda kv:(kv[1], kv[0]))
+    lines = [message.guild.get_member(points[n][0]).display_name + "\t\t\t\t" + str(points[n][1]) for n in range(0, len(points))]
+    await message.channel.send('Points do not persist between restarts, Soon\U00002122')
+    to_send = '```\n' + '\n'.join(lines) + '\n```'
+    await message.channel.send(to_send)
+
+async def points(message, args, author, client) :
+        await message.channel.send(author.display_name + ', you have ' + str(client.user_points[author.id]) + ' point' + ('s!' if client.user_points[author.id] != 1 else '!' ))
+
+
+
+
 game_cmds = [
 	bot_cmd("flip", coinflip, 1, 'Flip a coin with cryptographically secure randomness!'),
     bot_cmd("roulette", roulette, 1, 'Test your luck!'),
+    bot_cmd("leaderboard", leaderboard, 1, 'See who\'s winning'),
+    bot_cmd("points", points, 1, 'Check your score'),
 ]
