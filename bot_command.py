@@ -35,7 +35,7 @@ class bot_cmd:
             return
 
         await award_point(client, author.id)
-        
+
         #special check here to see if we need to reload the commands
         #this only reloads functionality, to add more commands the entire bot must be restarted for now        
         if(self.cmd == 'reload') :
@@ -137,5 +137,5 @@ async def award_point(client, author_id) :
         client.user_points[author_id] += 1
     else :
         client.user_points[author_id] = 1
-    print (client.user_points)
+    #print (client.user_points)
 
