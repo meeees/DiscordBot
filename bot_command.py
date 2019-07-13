@@ -86,6 +86,9 @@ def parse_command(message) :
 
 _loaded_modules = {}
 def load_plugins():
+    global _loaded_modules
+    #print (_loaded_modules)
+    new_modules = {}
     importlib.invalidate_caches()
     sys.path.append(sys.path[0] + '/plugins')
     #print(sys.path)
@@ -103,15 +106,19 @@ def load_plugins():
         return lst
 
     for f in files:
-        module = __import__(f[0:-3])
+        if f in _loaded_modules.keys() :
+            module = importlib.reload(_loaded_modules[f][0])
+        else :
+            module = __import__(f[0:-3])
         commands = []
         
         for x in dir(module):
             obj = getattr(module, x)
             commands += recurse_obj(obj)
 
-        _loaded_modules['%s' % f] = (module, commands)
+        new_modules['%s' % f] = (module, commands)
 
+    _loaded_modules = new_modules
     return _loaded_modules
 
 def init_commands(client):

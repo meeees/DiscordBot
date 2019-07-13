@@ -15,7 +15,14 @@ async def mtgcard(message, args, author, client) :
 		return
 	response = re.get(url)
 	res_json = response.json()
-	await message.channel.send(res_json['name'] + ': $'res_json['prices']['usd'] + '\n' + resresponse.json()['image_uris']['large'])
+	name = res_json['name']
+	price = res_json['prices']['usd']
+	if price == None :
+		price = 'No Price'
+	else :
+		price = '$' + price
+	await message.channel.send(res_json['name'] + ': ' + price + '\n' + res_json['image_uris']['large'])
+	#await message.channel.send(res_json['image_uris']['large'])
 
 
 if __name__ == '__main__' :
