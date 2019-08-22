@@ -26,7 +26,7 @@ async def leaderboard(message, args, author, client) :
     # print full leaderboard
     point_dict = client.settings.get_data_val('user_points')
     if point_dict == None :
-        await message.channel.send('No one has any points yet!')
+        await message.channel.send('No one has any updoots yet! Get updoots by getting thinking reactions!')
         return
     points = sorted(point_dict.items(), key = lambda kv:(kv[1], kv[0]))[::-1]
     print(points)
@@ -38,9 +38,10 @@ async def leaderboard(message, args, author, client) :
 async def points(message, args, author, client) :
     points = client.settings.get_data_val('user_points')
     if points == None or not author.id in points.keys() :
-        await message.channel.send("You have no points!")
+        #hardcoded instructions /shrug
+        await message.channel.send("You have no updoots! Get updoots by getting thinking reactions!")
         return
-    await message.channel.send(author.display_name + ', you have ' + str(points[author.id]) + ' point' + ('s!' if points[author.id] != 1 else '!' ))
+    await message.channel.send(author.display_name + ', you have ' + str(points[author.id]) + ' updoot' + ('s!' if points[author.id] != 1 else '!' ))
 
 
 
@@ -49,5 +50,5 @@ game_cmds = [
 	bot_cmd("flip", coinflip, 1, 'Flip a coin with cryptographically secure randomness!'),
     bot_cmd("roulette", roulette, 1, 'Test your luck!'),
     bot_cmd("leaderboard", leaderboard, 1, 'See who\'s winning'),
-    bot_cmd("points", points, 1, 'Check your score'),
+    bot_cmd("updoots", points, 1, 'Check your updoots'),
 ]
