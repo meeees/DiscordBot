@@ -26,7 +26,7 @@ async def leaderboard(message, args, author, client) :
     # print full leaderboard
     point_dict = client.settings.get_data_val('user_points')
     if point_dict == None :
-        await message.channel.send('No one has any updoots yet! Get updoots by getting thinking reactions!')
+        await message.channel.send('No one has any updoots yet! Get updoots by being smart! :thinking:')
         return
     points = sorted(point_dict.items(), key = lambda kv:(kv[1], kv[0]))[::-1]
     print(points)
@@ -39,7 +39,7 @@ async def points(message, args, author, client) :
     points = client.settings.get_data_val('user_points')
     if points == None or not author.id in points.keys() :
         #hardcoded instructions /shrug
-        await message.channel.send("You have no updoots! Get updoots by getting thinking reactions!")
+        await message.channel.send("You have no updoots! Get updoots by being smart! :thinking:")
         return
     await message.channel.send(author.display_name + ', you have ' + str(points[author.id]) + ' updoot' + ('s!' if points[author.id] != 1 else '!' ))
 
