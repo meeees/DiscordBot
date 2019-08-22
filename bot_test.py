@@ -3,6 +3,8 @@ import asyncio
 import bot_command as botcmd
 import bot_settings as settings
 
+from discord.utils import get
+
 if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
     # or libopus.so on linux in the current directory
@@ -21,6 +23,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+    client.loop.create_task(save_loop())
 
 @client.event
 async def on_message_delete(message) :
@@ -37,6 +40,23 @@ async def on_message_edit(before, after) :
             await before.channel.guild.get_channel(int(client.admin_channel_id)).send(text)
 
 @client.event
+async def on_reaction_add(reaction, user) :
+    name = resolve_emoji(reaction.emoji)
+    # no self points :thinking:
+    if reaction.message.author != user :
+        if name in client.settings.get_val('updoot_reacts') :
+            award_point(reaction.message.author.id)
+
+@client.event
+async def on_reaction_remove(reaction, user) :
+    name = resolve_emoji(reaction.emoji)
+    if reaction.message.author != user :
+        if name in client.settings.get_val('updoot_reacts') :
+            remove_point(reaction.message.author.id)
+
+
+
+@client.event
 async def on_message(message):
     #we don't want to act on other bots
     if message.author.bot:
@@ -46,11 +66,56 @@ async def on_message(message):
     if msgCmd:
         await msgCmd.execute(message, msgArgs[1], message.author, client)
 
+async def save_loop():
+    while True:
+        await asyncio.sleep(client.settings.get_val('save_interval'))
+        client.settings.save_data()
+        print ('Data saved')
 
-client.settings = settings.bot_settings('bot-data/settings.json')
-token = client.settings.get_val('token')
-client.bot_admins = client.settings.get_val('admins')
-client.admin_channel_id = client.settings.get_val('admin_channel')
-client.log_deleted = client.settings.get_val('log_deleted')
-client.log_edited = client.settings.get_val('log_edited')
-client.run(token)
+def award_point(author_id) :
+    points = client.settings.get_data_val('user_points')
+    if points == None :
+        points = {}
+        client.settings.set_data_val('user_points', points)
+
+    if author_id in points:
+        points[author_id] += 1
+    else :
+        points[author_id] = 1
+
+def remove_point(author_id) :
+    points = client.settings.get_data_val('user_points')
+    if points == None :
+        points = {}
+        client.settings.set_data_val('user_points', points)
+
+    if author_id in points:
+        points[author_id] -= 1
+        # no negative points
+        if points[author_id] < 0 :
+            points[author_id] = 0
+    else :
+        # no negative points
+        points[author_id] = 0
+
+def resolve_emoji(e) :
+    if isinstance(e, discord.Emoji) :
+        return e.name
+    else :
+        return e
+
+def init() :
+
+    client.settings = settings.bot_settings('bot-data/settings.json')
+    token = client.settings.get_val('token')
+    client.bot_admins = client.settings.get_val('admins')
+    client.admin_channel_id = client.settings.get_val('admin_channel')
+    client.log_deleted = client.settings.get_val('log_deleted')
+    client.log_edited = client.settings.get_val('log_edited')
+
+    client.settings.load_data()
+    
+    client.run(token)
+
+if __name__ == '__main__' :
+    init()

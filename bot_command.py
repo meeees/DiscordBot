@@ -34,8 +34,6 @@ class bot_cmd:
         if not self.has_perms(author) :
             return
 
-        await award_point(client, author.id)
-
         #special check here to see if we need to reload the commands
         #this only reloads functionality, to add more commands the entire bot must be restarted for now        
         if(self.cmd == 'reload') :
@@ -136,14 +134,4 @@ def init_commands(client):
         cmds += _cmds
 
     return cmds
-
-
-async def award_point(client, author_id) :
-    if (not hasattr(client, 'user_points')) or client.user_points == None :
-        client.user_points = {}
-    if author_id in client.user_points.keys() :
-        client.user_points[author_id] += 1
-    else :
-        client.user_points[author_id] = 1
-    #print (client.user_points)
 

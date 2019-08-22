@@ -24,15 +24,23 @@ async def roulette(message, args, author, client) :
 
 async def leaderboard(message, args, author, client) :
     # print full leaderboard
-    points = sorted(client.user_points.items(), key = lambda kv:(kv[1], kv[0]))[::-1]
+    point_dict = client.settings.get_data_val('user_points')
+    if point_dict == None :
+        await message.channel.send('No one has any points yet!')
+        return
+    points = sorted(point_dict.items(), key = lambda kv:(kv[1], kv[0]))[::-1]
+    print(points)
     # 32 is magic number because why not?
     lines = [message.guild.get_member(points[n][0]).display_name.ljust(32) + str(points[n][1]).rjust(10) for n in range(0, len(points))]
-    await message.channel.send('Points do not persist between restarts, Soon\U00002122')
     to_send = '```\n' + '\n'.join(lines) + '\n```'
     await message.channel.send(to_send)
 
 async def points(message, args, author, client) :
-        await message.channel.send(author.display_name + ', you have ' + str(client.user_points[author.id]) + ' point' + ('s!' if client.user_points[author.id] != 1 else '!' ))
+    points = client.settings.get_data_val('user_points')
+    if points == None or not author.id in points.keys() :
+        await message.channel.send("You have no points!")
+        return
+    await message.channel.send(author.display_name + ', you have ' + str(points[author.id]) + ' point' + ('s!' if points[author.id] != 1 else '!' ))
 
 
 

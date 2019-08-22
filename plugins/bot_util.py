@@ -67,10 +67,15 @@ async def _help(message, args, author, client) :
 async def endbot(message, args, author, client) :
     await message.channel.send('Goodbye!')
     print ("Ending due to command from {}".format(author.name))
+    client.settings.save_data()
     await client.logout()
 
 async def complain(message, args, author, client) :
     await message.channel.send('Your complaint has been noted.')
+
+async def save_data(message, args, author, client) :
+    client.settings.save_data()
+    await message.channel.send('Bot data has been saved.')
 
 util_cmds = [
 	bot_cmd("help", _help, 1, 'Show a user all the commands they can use'),
@@ -79,6 +84,7 @@ util_cmds = [
     bot_cmd("deleteme", deleteme, cmd_lvl.mods, 'Delete all messages from the bot, use -s to not get feedback'),
     bot_cmd("deletecmds", deletecmds, 1, 'Delete all command messages written by the user'),
     bot_cmd("deleteallcmds", deleteallcmds, cmd_lvl.mods, 'Delete all command messages written by anyone'),
-    bot_cmd("killme", endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted'),
-    bot_cmd("complain", complain, 1, "File a complaint about the server")
+    bot_cmd("killme", endbot, cmd_lvl.bot_admins, 'Turn off the bot, will need to be manually restarted. It is recommended to use this to end the bot so that data will get saved.'),
+    bot_cmd("complain", complain, 1, "File a complaint about the server"),
+    bot_cmd("savedata", save_data, cmd_lvl.bot_admins, 'Save everything in the bot data')
 ]
