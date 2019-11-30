@@ -1,13 +1,16 @@
 import discord
 import asyncio
+import re
 
 from bot_command import bot_cmd
 
 class Emotes:
-    EMOTE_ADD_SYNTAX = '`!emote <name> <url>`'
+    EMOTE_ADD_SYNTAX = '`!emote <name> <url or emote id>`'
     EMOTE_REMOVE_SYNTAX = '`!eremove <name>`'
     EMOTE_VOTE_SYNTAX = '`!vote <name>`'
     EMOTE_REVOKE_VOTE_SYNTAX = '`!rvote <name>`'
+    URL_TEMPLATE = 'https://cdn.discordapp.com/emojis/{emote_id}.png'
+    EMOTE_ID_REGEX = re.compile(r'^\s*([0-9]+)\s*$')
 
     @staticmethod
     async def display_proposed_emotes(message, args, author, client):
@@ -35,6 +38,8 @@ class Emotes:
         if name in proposed_emotes:
             await message.channel.send('Emote already exists! Remove an emote with ' + Emotes.EMOTE_REMOVE_SYNTAX)
             return
+        if Emotes.EMOTE_ID_REGEX.match(url):
+            url = Emotes.URL_TEMPLATE.format(emote_id = url)
         proposed_emotes[name] = { 'url': url, 'author': author.id, 'votes': { author.id } }
         await message.channel.send('Added Emote: ' + name)
 
