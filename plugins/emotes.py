@@ -82,7 +82,7 @@ class Emotes:
     @staticmethod
     async def remove_vote_for_proposed_emote(message, args, author, client):
         if len(args) == 0:
-            await message.channel.send('Please specify the emote from which you would like to revoke vote! ' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX)
+            await message.channel.send('Please specify the emote from which you would like to revoke your vote! ' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX)
             return
         name = args[0]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
