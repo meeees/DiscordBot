@@ -16,11 +16,11 @@ class Emotes:
             await message.channel.send('There are currently no proposed emotes! Propose one with ' + Emotes.EMOTE_ADD_SYNTAX)
             return
         proposed_emotes = sorted(proposed_emotes.items(), key=lambda emote: len(emote[1]['votes']), reverse=True)
-        lines = [str('Votes Emote')]
-        for n in range(0, len(proposed_emotes)):
-            lines.append(str(len(proposed_emotes[n][1]['votes'])).rjust(5) + ' ' + proposed_emotes[n][0].ljust(16))
-        to_send = '```\n' + '\n'.join(lines) + '\n```'
-        await message.channel.send(to_send)
+        lines = [str(len(proposed_emotes[n][1]['votes'])).rjust(9) + ': [' + proposed_emotes[n][0].ljust(16) + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
+        to_send = '\n'.join(lines)
+        embed = discord.Embed()
+        embed.add_field(name='Votes: Emote', value=to_send)
+        await message.channel.send(embed=embed)
 
     @staticmethod
     async def add_proposed_emote(message, args, author, client):
