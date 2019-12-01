@@ -1,13 +1,16 @@
 import discord
 import asyncio
+import re
 
 from bot_command import bot_cmd
 
 class Emotes:
-    EMOTE_ADD_SYNTAX = '`!emote <name> <url>`'
+    EMOTE_ADD_SYNTAX = '`!emote <name> <url or emote id>`'
     EMOTE_REMOVE_SYNTAX = '`!eremove <name>`'
     EMOTE_VOTE_SYNTAX = '`!vote <name>`'
     EMOTE_REVOKE_VOTE_SYNTAX = '`!rvote <name>`'
+    URL_TEMPLATE = 'https://cdn.discordapp.com/emojis/{emote_id}.png'
+    EMOTE_ID_REGEX = re.compile(r'^\s*([0-9]+)\s*$')
 
     @staticmethod
     async def display_proposed_emotes(message, args, author, client):
@@ -16,11 +19,11 @@ class Emotes:
             await message.channel.send('There are currently no proposed emotes! Propose one with ' + Emotes.EMOTE_ADD_SYNTAX)
             return
         proposed_emotes = sorted(proposed_emotes.items(), key=lambda emote: len(emote[1]['votes']), reverse=True)
-        lines = [str('Votes Emote')]
-        for n in range(0, len(proposed_emotes)):
-            lines.append(str(len(proposed_emotes[n][1]['votes'])).rjust(5) + ' ' + proposed_emotes[n][0].ljust(16))
-        to_send = '```\n' + '\n'.join(lines) + '\n```'
-        await message.channel.send(to_send)
+        lines = [str(len(proposed_emotes[n][1]['votes'])).rjust(9) + ': [' + proposed_emotes[n][0].ljust(16) + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
+        to_send = '\n'.join(lines)
+        embed = discord.Embed()
+        embed.add_field(name='Votes: Emote', value=to_send)
+        await message.channel.send(embed=embed)
 
     @staticmethod
     async def add_proposed_emote(message, args, author, client):
@@ -35,6 +38,8 @@ class Emotes:
         if name in proposed_emotes:
             await message.channel.send('Emote already exists! Remove an emote with ' + Emotes.EMOTE_REMOVE_SYNTAX)
             return
+        if Emotes.EMOTE_ID_REGEX.match(url):
+            url = Emotes.URL_TEMPLATE.format(emote_id = url)
         proposed_emotes[name] = { 'url': url, 'author': author.id, 'votes': { author.id } }
         await message.channel.send('Added Emote: ' + name)
 
@@ -77,7 +82,7 @@ class Emotes:
     @staticmethod
     async def remove_vote_for_proposed_emote(message, args, author, client):
         if len(args) == 0:
-            await message.channel.send('Please specify the emote from which you would like to revoke vote! ' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX)
+            await message.channel.send('Please specify the emote from which you would like to revoke your vote! ' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX)
             return
         name = args[0]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
