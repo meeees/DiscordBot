@@ -11,6 +11,7 @@ class Emotes:
     EMOTE_CURRENT_EMOTES_SYNTAX = '!emotes -c'
     URL_TEMPLATE = 'https://cdn.discordapp.com/emojis/{emote_id}.png'
     EMOTE_ID_REGEX = re.compile(r'^\s*([0-9]+)\s*$')
+    EMBED_FIELD_MAX = 25
 
     @staticmethod
     async def display_current_emotes(message, args, author, client):
@@ -41,7 +42,7 @@ class Emotes:
             await message.channel.send('Please supply both an emote name, and an image url: `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
-        if len(proposed_emotes) >= 24:
+        if len(proposed_emotes) >= Emotes.EMBED_FIELD_MAX:
             await message.channel.send('Sorry, there are too many proposed emotes to add another! Please get the mods to remove one.')
             return
         name = args[0]; url = args[1]
