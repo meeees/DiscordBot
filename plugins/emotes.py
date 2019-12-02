@@ -4,10 +4,11 @@ import re
 from bot_command import bot_cmd, cmd_lvl
 
 class Emotes:
-    EMOTE_ADD_SYNTAX = '`!emote <name> <url or emote id>`'
-    EMOTE_REMOVE_SYNTAX = '`!remote <name>`'
-    EMOTE_VOTE_SYNTAX = '`!vote <name>`'
-    EMOTE_REVOKE_VOTE_SYNTAX = '`!rvote <name>`'
+    EMOTE_ADD_SYNTAX = '!emotes -a <name> <url or emote id>'
+    EMOTE_REMOVE_SYNTAX = '!emotes -r <name>'
+    EMOTE_VOTE_SYNTAX = '!emotes -v <name>'
+    EMOTE_REVOKE_VOTE_SYNTAX = '!emotes -rv <name>'
+    EMOTE_CURRENT_EMOTES_SYNTAX = '!emotes -c'
     URL_TEMPLATE = 'https://cdn.discordapp.com/emojis/{emote_id}.png'
     EMOTE_ID_REGEX = re.compile(r'^\s*([0-9]+)\s*$')
 
@@ -21,7 +22,7 @@ class Emotes:
     async def display_proposed_emotes(message, args, author, client):
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         if proposed_emotes == None or len(proposed_emotes.items()) == 0:
-            await message.channel.send('There are currently no proposed emotes! Propose one with ' + Emotes.EMOTE_ADD_SYNTAX)
+            await message.channel.send('There are currently no proposed emotes! Propose one with `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
         proposed_emotes = sorted(proposed_emotes.items(), key=lambda emote: len(emote[1]['votes']), reverse=True)
         lines = [str(len(proposed_emotes[n][1]['votes'])) + ': [' + proposed_emotes[n][0] + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
@@ -33,7 +34,7 @@ class Emotes:
     @staticmethod
     async def add_proposed_emote(message, args, author, client):
         if len(args) == 0 or len(args) == 1:
-            await message.channel.send('Please supply both an emote name, and an image url: ' + Emotes.EMOTE_ADD_SYNTAX)
+            await message.channel.send('Please supply both an emote name, and an image url: `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
         name = args[0]; url = args[1]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
@@ -41,7 +42,7 @@ class Emotes:
             proposed_emotes = {}
             client.settings.set_data_val('proposed_emotes', proposed_emotes)
         if name in proposed_emotes:
-            await message.channel.send('Emote already exists! Remove an emote with ' + Emotes.EMOTE_REMOVE_SYNTAX)
+            await message.channel.send('Emote already exists! Remove an emote with `' + Emotes.EMOTE_REMOVE_SYNTAX + '`')
             return
         if Emotes.EMOTE_ID_REGEX.match(url):
             url = Emotes.URL_TEMPLATE.format(emote_id = url)
@@ -55,12 +56,12 @@ class Emotes:
             await message.channel.send('Sorry, only mods may remove proposed emotes (for now).')
             return
         if len(args) == 0:
-            await message.channel.send('Please supply an emote to remove: ' + Emotes.EMOTE_ADD_SYNTAX)
+            await message.channel.send('Please supply an emote to remove: `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
         name = args[0]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         if proposed_emotes == None or len(proposed_emotes.items()) == 0:
-            await message.channel.send('There are no emotes to remove! Add one with ' + Emotes.EMOTE_REMOVE_SYNTAX)
+            await message.channel.send('There are no emotes to remove! Add one with `' + Emotes.EMOTE_REMOVE_SYNTAX + '`')
             return
         try:
             proposed_emotes.pop(name)
@@ -71,12 +72,12 @@ class Emotes:
     @staticmethod
     async def vote_for_proposed_emote(message, args, author, client):
         if len(args) == 0:
-            await message.channel.send('Please specify the emote for which you would like to vote! ' + Emotes.EMOTE_VOTE_SYNTAX)
+            await message.channel.send('Please specify the emote for which you would like to vote! `' + Emotes.EMOTE_VOTE_SYNTAX + '`')
             return
         name = args[0]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         if proposed_emotes == None or len(proposed_emotes.items()) == 0:
-            await message.channel.send('There are no emotes! Add one with ' + Emotes.EMOTE_REMOVE_SYNTAX)
+            await message.channel.send('There are no emotes! Add one with `' + Emotes.EMOTE_REMOVE_SYNTAX + '`')
             return
         try:
             votes = proposed_emotes[name]['votes']
@@ -91,12 +92,12 @@ class Emotes:
     @staticmethod
     async def remove_vote_for_proposed_emote(message, args, author, client):
         if len(args) == 0:
-            await message.channel.send('Please specify the emote from which you would like to revoke your vote! ' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX)
+            await message.channel.send('Please specify the emote from which you would like to revoke your vote! `' + Emotes.EMOTE_REVOKE_VOTE_SYNTAX + '`')
             return
         name = args[0]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         if proposed_emotes == None or len(proposed_emotes.items()) == 0:
-            await message.channel.send('There are no emotes! Add one with ' + Emotes.EMOTE_REMOVE_SYNTAX)
+            await message.channel.send('There are no emotes! Add one with `' + Emotes.EMOTE_REMOVE_SYNTAX + '`')
             return
         try: 
             votes = proposed_emotes[name]['votes']
@@ -110,8 +111,13 @@ class Emotes:
 
     @staticmethod
     async def help(message, args, author, client):
-        embed = Discord.embed()
-        await author.send()
+        embed = discord.Embed(title="Emotes", colour=discord.Colour(0x1869f), description="Command options:\n\n")
+        embed.add_field(name="-a", inline="false", value="Add an emote to the list of proposed emotes\n```" + Emotes.EMOTE_ADD_SYNTAX + "```")
+        embed.add_field(name="-v", inline="false", value="Vote for a proposed emote\n```" + Emotes.EMOTE_REMOVE_SYNTAX + "```")
+        embed.add_field(name="-r", inline="false", value="Remove an emote from the list of proposed emotes\n```" + Emotes.EMOTE_VOTE_SYNTAX + "```")
+        embed.add_field(name="-vr", inline="false", value="Revoke your vote from one of the proposed emotes (note: 'v' and 'r' may be specified in any order, including but not limited to: `-vr`, `-rv`, `-v -r`, or `-r -v`)\n```" + Emotes.EMOTE_REVOKE_VOTE_SYNTAX + "```")
+        embed.add_field(name="-c", inline="false", value="View the server's current emotes (this one's just for fun)```" + Emotes.EMOTE_CURRENT_EMOTES_SYNTAX + "```")
+        await author.send(embed = embed)
 
 
 #----- Definitions for emote commands, based on options length -----
