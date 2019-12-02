@@ -1,16 +1,21 @@
 import discord
 import asyncio
 import re
-
-from bot_command import bot_cmd
+from bot_command import bot_cmd, cmd_lvl
 
 class Emotes:
     EMOTE_ADD_SYNTAX = '`!emote <name> <url or emote id>`'
-    EMOTE_REMOVE_SYNTAX = '`!eremove <name>`'
+    EMOTE_REMOVE_SYNTAX = '`!remote <name>`'
     EMOTE_VOTE_SYNTAX = '`!vote <name>`'
     EMOTE_REVOKE_VOTE_SYNTAX = '`!rvote <name>`'
     URL_TEMPLATE = 'https://cdn.discordapp.com/emojis/{emote_id}.png'
     EMOTE_ID_REGEX = re.compile(r'^\s*([0-9]+)\s*$')
+
+    @staticmethod
+    async def display_current_emotes(message, args, author, client):
+        emotes = map(lambda e: str(e), message.guild.emojis)
+        to_send = ' '.join(emotes)
+        await message.channel.send(to_send)
 
     @staticmethod
     async def display_proposed_emotes(message, args, author, client):
@@ -19,7 +24,7 @@ class Emotes:
             await message.channel.send('There are currently no proposed emotes! Propose one with ' + Emotes.EMOTE_ADD_SYNTAX)
             return
         proposed_emotes = sorted(proposed_emotes.items(), key=lambda emote: len(emote[1]['votes']), reverse=True)
-        lines = [str(len(proposed_emotes[n][1]['votes'])).rjust(9) + ': [' + proposed_emotes[n][0].ljust(16) + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
+        lines = [str(len(proposed_emotes[n][1]['votes'])) + ': [' + proposed_emotes[n][0] + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
         to_send = '\n'.join(lines)
         embed = discord.Embed()
         embed.add_field(name='Votes: Emote', value=to_send)
@@ -45,6 +50,10 @@ class Emotes:
 
     @staticmethod
     async def remove_proposed_emote(message, args, author, client):
+        # Only allow mods to remove proposed emotes 
+        if not bot_cmd.check_perms(author, cmd_lvl.mods):
+            await message.channel.send('Sorry, only mods may remove proposed emotes (for now).')
+            return
         if len(args) == 0:
             await message.channel.send('Please supply an emote to remove: ' + Emotes.EMOTE_ADD_SYNTAX)
             return
@@ -99,10 +108,57 @@ class Emotes:
         except KeyError:
             await message.channel.send('Emote `' + name + '` does not exist!  (...but you may add it) :thinking:')    
 
+    @staticmethod
+    async def help(message, args, author, client):
+        embed = Discord.embed()
+        await author.send()
+
+
+#----- Definitions for emote commands, based on options length -----
+def zero(options):
+    return Emotes.display_proposed_emotes
+
+def one(options):
+    # todo: 'help' option
+    return {
+        'a': Emotes.add_proposed_emote,
+        'c': Emotes.display_current_emotes,
+        'r': Emotes.remove_proposed_emote,
+        'v': Emotes.vote_for_proposed_emote,
+        'help': Emotes.help
+    }.get(options.pop())
+
+def two(options):
+    if { 'v', 'r' }.issubset(options):
+        return Emotes.remove_vote_for_proposed_emote
+
+#----- Switch case for commands, based on number of options -----#
+EMOTES_COMMANDS_SWITCH = {
+    0: zero,
+    1: one,
+    2: two,
+}
+
+def separate_options_and_args(args):
+    argsIndex = 0
+    options = set()
+    for n in range(0, len(args)): 
+        if args[n][0] != '-':
+            break
+        argsIndex += 1
+        if args[n].find('help') != -1:
+            options.add('help')
+        else:
+            for opt in args[n][1:]:
+                options.add(opt)
+    return (options, args[argsIndex:])
+
+async def handle_emotes_command(message, args, author, client):
+    options, args = separate_options_and_args(args)
+    cmd = EMOTES_COMMANDS_SWITCH.get(len(options), lambda o: None)(options)
+    if cmd != None:
+        await cmd(message, args, author, client)
+
 emote_cmds = [
-    bot_cmd('emotes', Emotes.display_proposed_emotes, 1, 'Display the list of proposed emotes'),
-    bot_cmd('emote', Emotes.add_proposed_emote, 1, 'Add an emote to the proposed emotes list!'),
-    bot_cmd('eremove', Emotes.remove_proposed_emote, 1, 'Remove an emote from the proposed emotes list'),
-    bot_cmd('vote', Emotes.vote_for_proposed_emote, 1, 'Vote for a proposed emote!'),
-    bot_cmd('rvote', Emotes.remove_vote_for_proposed_emote, 1, 'Revoke your support for a proposed emote')
+    bot_cmd('emotes', handle_emotes_command, 1, 'Command to interact with server emotes, such as viewing proposed emotes and voting!'),
 ]
