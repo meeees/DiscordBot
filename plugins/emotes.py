@@ -20,6 +20,10 @@ class Emotes:
 
     @staticmethod
     async def display_proposed_emotes(message, args, author, client):
+        if len(args) != 0:
+            if any(arg.find('help') != -1 for arg in args):
+                await Emotes.help(message, args, author, client)
+            return
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         if proposed_emotes == None or len(proposed_emotes.items()) == 0:
             await message.channel.send('There are currently no proposed emotes! Propose one with `' + Emotes.EMOTE_ADD_SYNTAX + '`')
@@ -115,7 +119,7 @@ class Emotes:
         embed.add_field(name="-a", inline="false", value="Add an emote to the list of proposed emotes\n```" + Emotes.EMOTE_ADD_SYNTAX + "```")
         embed.add_field(name="-v", inline="false", value="Vote for a proposed emote\n```" + Emotes.EMOTE_REMOVE_SYNTAX + "```")
         embed.add_field(name="-r", inline="false", value="Remove an emote from the list of proposed emotes\n```" + Emotes.EMOTE_VOTE_SYNTAX + "```")
-        embed.add_field(name="-vr", inline="false", value="Revoke your vote from one of the proposed emotes (note: 'v' and 'r' may be specified in any order, including but not limited to: `-vr`, `-rv`, `-v -r`, or `-r -v`)\n```" + Emotes.EMOTE_REVOKE_VOTE_SYNTAX + "```")
+        embed.add_field(name="-rv", inline="false", value="Revoke your vote from one of the proposed emotes (note: 'v' and 'r' may be specified in any order, including but not limited to: `-vr`, `-rv`, `-v -r`, or `-r -v`)\n```" + Emotes.EMOTE_REVOKE_VOTE_SYNTAX + "```")
         embed.add_field(name="-c", inline="false", value="View the server's current emotes (this one's just for fun)```" + Emotes.EMOTE_CURRENT_EMOTES_SYNTAX + "```")
         await author.send(embed = embed)
 
