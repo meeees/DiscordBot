@@ -23,8 +23,12 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+    await say_hello()
     client.loop.create_task(save_loop())
-    await message.channel.guild.get_channel(int(client.admin_channel_id)).send('Hello World')
+
+async def say_hello() :
+    # the bot should only be in one server for now so assume that
+    await client.guilds[0].get_channel(int(client.admin_channel_id)).send('Hello World')
 
 @client.event
 async def on_message_delete(message) :
