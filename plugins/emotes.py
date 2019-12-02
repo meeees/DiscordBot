@@ -122,6 +122,7 @@ class Emotes:
         embed.add_field(name="-rv", inline="false", value="Revoke your vote from one of the proposed emotes (note: 'v' and 'r' may be specified in any order, including but not limited to: `-vr`, `-rv`, `-v -r`, or `-r -v`)\n```" + Emotes.EMOTE_REVOKE_VOTE_SYNTAX + "```")
         embed.add_field(name="-c", inline="false", value="View the server's current emotes (this one's just for fun)```" + Emotes.EMOTE_CURRENT_EMOTES_SYNTAX + "```")
         await author.send(embed = embed)
+        await message.channel.send('Help about the Emotes command has been sent. Check your DMs!')
 
 
 #----- Definitions for emote commands, based on options length -----
