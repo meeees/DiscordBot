@@ -28,9 +28,6 @@ async def on_ready():
 
     client.admin_channel = client.guilds[0].get_channel(int(client.admin_channel_id))
     await client.admin_channel.send('Hello World')
-    if client.settings.get_val('use_updater') :
-        thread.start_new_thread(updater.python_start, (botcmd.bot_cmd.reload(client.admin_channel), ))
-        print ('Bot updater started')
     client.loop.create_task(save_loop())
 
 @client.event
@@ -121,8 +118,11 @@ def init() :
     client.log_deleted = client.settings.get_val('log_deleted')
     client.log_edited = client.settings.get_val('log_edited')
 
-
     client.settings.load_data()
+
+    if client.settings.get_val('use_updater') :
+        thread.start_new_thread(updater.python_start, (lambda: botcmd.bot_cmd.reload(client.admin_channel), client.loop, ))
+        print ('Bot updater started')
     
     client.run(token)
 
