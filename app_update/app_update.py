@@ -1,5 +1,6 @@
 from flask import Flask, request
 import os
+import asyncio
 
 app = Flask('app_update')
 update_cmd = 'sh app_update.sh'
@@ -18,7 +19,9 @@ def get_webhook_post():
                 os.system(update_cmd)
             # or run a lambda function
             else :
-                update_cmd()
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                result = loop.run_until_complete(update_cmd())
 
             print('Update command run')
         return '204'

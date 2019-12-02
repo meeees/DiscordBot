@@ -29,7 +29,7 @@ async def on_ready():
     client.admin_channel = client.guilds[0].get_channel(int(client.admin_channel_id))
     await client.admin_channel.send('Hello World')
     if client.settings.get_val('use_updater') :
-        thread.start_new_thread(updater.python_start, (lambda: botcmd.bot_cmd.reload(client.admin_channel)))
+        thread.start_new_thread(updater.python_start, (botcmd.bot_cmd.reload(client.admin_channel)))
         print ('Bot updater started')
     client.loop.create_task(save_loop())
 
