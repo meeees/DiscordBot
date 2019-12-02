@@ -55,15 +55,19 @@ class bot_cmd:
         #else run given command
         await self.run(message, args, author, client)
 
-    def has_perms(self, user) :
-        if self.lvl == cmd_lvl.everyone :
+    @staticmethod
+    def check_perms(user, lvl) :
+        if lvl == cmd_lvl.everyone :
             return True
-        if self.lvl == cmd_lvl.mods :
+        if lvl == cmd_lvl.mods :
             return type(user) is discord.member.Member and user.top_role.permissions.mute_members
-        if self.lvl == cmd_lvl.admins :
+        if lvl == cmd_lvl.admins :
             return type(user) is discord.member.Member and user.top_role.permissions.administrator
-        if self.lvl == cmd_lvl.bot_admins :
+        if lvl == cmd_lvl.bot_admins :
             return str(user.id) in client.bot_admins
+
+    def has_perms(self, user) :
+        return bot_cmd.check_perms(user, self.lvl)
 
 
 def find_command(command, client):
