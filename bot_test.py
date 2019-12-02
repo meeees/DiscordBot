@@ -24,6 +24,7 @@ async def on_ready():
     print(client.user.id)
     print('------')
     client.loop.create_task(save_loop())
+    await message.channel.guild.get_channel(int(client.admin_channel_id)).send('Hello World')
 
 @client.event
 async def on_message_delete(message) :
