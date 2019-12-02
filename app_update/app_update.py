@@ -17,7 +17,7 @@ def get_webhook_post():
             # run a shell script
             if update_cmd_shell :
                 os.system(update_cmd)
-            # or run a lambda function
+            # or run an async function
             else :
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
@@ -31,6 +31,8 @@ def get_webhook_post():
         
 
 def python_start(update_fnc) :
+    global update_cmd
+    global update_cmd_shell
     update_cmd = update_fnc
     update_cmd_shell = False
     app.run(host='0.0.0.0')
