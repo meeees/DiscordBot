@@ -21,7 +21,7 @@ def get_webhook_post():
             else :
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                result = loop.run_until_complete(update_cmd())
+                loop.run_until_complete(update_cmd())
 
             print('Update command run')
         return '204'
