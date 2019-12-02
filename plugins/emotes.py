@@ -29,10 +29,10 @@ class Emotes:
             await message.channel.send('There are currently no proposed emotes! Propose one with `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
         proposed_emotes = sorted(proposed_emotes.items(), key=lambda emote: len(emote[1]['votes']), reverse=True)
-        lines = [str(len(proposed_emotes[n][1]['votes'])) + ': [' + proposed_emotes[n][0] + '](' + proposed_emotes[n][1]['url'] + ')' for n in range(0, len(proposed_emotes))]
-        to_send = '\n'.join(lines)
         embed = discord.Embed()
-        embed.add_field(name='Votes: Emote', value=to_send)
+        for proposed_emote in proposed_emotes:
+            emote_stats = str(len(proposed_emote[1]['votes'])) + ': [' + proposed_emote[0] + '](' + proposed_emote[1]['url'] + ')'
+            embed.add_field(name='\u200b', value=emote_stats)
         await message.channel.send(embed=embed)
 
     @staticmethod
@@ -40,8 +40,11 @@ class Emotes:
         if len(args) == 0 or len(args) == 1:
             await message.channel.send('Please supply both an emote name, and an image url: `' + Emotes.EMOTE_ADD_SYNTAX + '`')
             return
-        name = args[0]; url = args[1]
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
+        if len(proposed_emotes) >= 24:
+            await message.channel.send('Sorry, there are too many proposed emotes to add another! Please get the mods to remove one.')
+            return
+        name = args[0]; url = args[1]
         if proposed_emotes == None:
             proposed_emotes = {}
             client.settings.set_data_val('proposed_emotes', proposed_emotes)
