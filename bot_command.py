@@ -37,11 +37,7 @@ class bot_cmd:
         #special check here to see if we need to reload the commands
         #this only reloads functionality, to add more commands the entire bot must be restarted for now        
         if(self.cmd == 'reload') :
-            global cmdlst
-            cmdlst = importlib.reload(cmdlst)
-            client.cmd_list = init_commands(client)
-            print ('Reloaded commands')
-            await message.channel.send('Reloaded command functionality')
+            await bot_cmd.reload(message.channel)
             return
         #only admins may change refusalLevel of bot
         if self.cmd == 'refusallevel' and len(args) :
@@ -68,6 +64,14 @@ class bot_cmd:
 
     def has_perms(self, user) :
         return bot_cmd.check_perms(user, self.lvl)
+
+    @staticmethod
+    async def reload(channel): 
+        global cmdlst
+        cmdlst = importlib.reload(cmdlst)
+        client.cmd_list = init_commands(client)
+        print ('Reloaded commands')
+        await channel.send('Reloaded command functionality')
 
 
 def find_command(command, client):

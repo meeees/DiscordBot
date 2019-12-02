@@ -2,6 +2,8 @@ import discord
 import asyncio
 import bot_command as botcmd
 import bot_settings as settings
+import app_update.app_update as updater
+import _thread as thread
 
 from discord.utils import get
 
@@ -23,12 +25,13 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await say_hello()
-    client.loop.create_task(save_loop())
 
-async def say_hello() :
-    # the bot should only be in one server for now so assume that
-    await client.guilds[0].get_channel(int(client.admin_channel_id)).send('Hello World')
+    client.admin_channel = client.guilds[0].get_channel(int(client.admin_channel_id))
+    await client.admin_channel.send('Hello World')
+    if client.settings.get_val('use_updater') :
+        thread.start_new_thread(updater.python_start, (lambda: botcmd.bot_cmd.reload(client.admin_channel)))
+        print ('Bot updater started')
+    client.loop.create_task(save_loop())
 
 @client.event
 async def on_message_delete(message) :
@@ -117,6 +120,7 @@ def init() :
     client.admin_channel_id = client.settings.get_val('admin_channel')
     client.log_deleted = client.settings.get_val('log_deleted')
     client.log_edited = client.settings.get_val('log_edited')
+
 
     client.settings.load_data()
     
