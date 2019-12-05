@@ -85,10 +85,9 @@ def find_command(command, client):
             return cmd
     return None
 
-def parse_command(message) :
-    # TODO: support string arguments
+def parse_command(message):
     tmp = message.content.split(' ')
-    return (tmp[0],tmp[1:])
+    return (tmp[0], [x for x in tmp[1:] if x != ''])
 
 _loaded_modules = {}
 def load_plugins():
