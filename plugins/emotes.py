@@ -123,7 +123,7 @@ class Emotes:
 
     @staticmethod
     async def add_emote_from_bot(message, args, author, client):
-        if (not bot_cmd.check_perms(author, cmd_lvl.bot_admins)):
+        if (not bot_cmd.check_perms(author, cmd_lvl.admins)):
             return
         proposed_emotes = client.settings.get_data_val('proposed_emotes')
         name = args[0]
@@ -156,7 +156,7 @@ class Emotes:
         embed.add_field(name="-r", inline="false", value="Remove an emote from the list of proposed emotes\n```" + Emotes.EMOTE_REMOVE_SYNTAX() + "```")
         embed.add_field(name="-rv", inline="false", value="Revoke your vote from one of the proposed emotes (note: 'v' and 'r' may be specified in any order, including but not limited to: `-vr`, `-rv`, `-v -r`, or `-r -v`)\n```" + Emotes.EMOTE_REVOKE_VOTE_SYNTAX() + "```")
         embed.add_field(name="-c", inline="false", value="View the server's current emotes (this one's just for fun)```" + Emotes.EMOTE_CURRENT_EMOTES_SYNTAX() + "```")
-        embed.add_field(name="-u", inline="false", value="Create an emote thats been proposed (bot admins only)```" + Emotes.EMOTE_CREATE_SYNTAX() + "```")
+        embed.add_field(name="-u", inline="false", value="Create an emote thats been proposed (server admins only)```" + Emotes.EMOTE_CREATE_SYNTAX() + "```")
         await author.send(embed = embed)
         await message.channel.send('Help about the Emotes command has been sent. Check your DMs!')
 
