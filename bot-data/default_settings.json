@@ -5,6 +5,7 @@
 "log_deleted":false,
 "log_edited":false,
 "admin_channel":"Put admin channel here",
+"complaint_channel":"",
 "updoot_reacts":[],
 "save_interval":300,
 "use_updater":false

@@ -27,6 +27,7 @@ async def on_ready():
     print('------')
 
     client.admin_channel = client.guilds[0].get_channel(int(client.admin_channel_id))
+    client.complaint_channel = client.guilds[0].get_channel(int(client.complaint_channel_id))
     await client.admin_channel.send('Hello World')
     client.loop.create_task(save_loop())
 
@@ -117,6 +118,7 @@ def init() :
     client.admin_channel_id = client.settings.get_val('admin_channel')
     client.log_deleted = client.settings.get_val('log_deleted')
     client.log_edited = client.settings.get_val('log_edited')
+    client.complaint_channel_id = client.settings.get_val('complaint_channel')
 
     client.settings.load_data()
 

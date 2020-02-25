@@ -72,6 +72,8 @@ async def endbot(message, args, author, client) :
 
 async def complain(message, args, author, client) :
     await message.channel.send('Your complaint has been noted.')
+    if client.complaint_channel != None :
+        await client.complaint_channel.send(message.content)
 
 async def save_data(message, args, author, client) :
     client.settings.save_data()
