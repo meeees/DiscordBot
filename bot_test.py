@@ -30,7 +30,7 @@ async def on_ready():
     client.admin_channel = client.guilds[0].get_channel(int(client.admin_channel_id))
     client.complaint_channel = client.guilds[0].get_channel(int(client.complaint_channel_id))
     my_ip = requests.get('https://api.ipify.org').text
-    await client.admin_channel.send('Hello World from', my_ip)
+    await client.admin_channel.send('Hello World from ' + my_ip)
     client.loop.create_task(save_loop())
 
 @client.event
