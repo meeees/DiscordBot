@@ -5,6 +5,7 @@ import bot_settings as settings
 import app_update.app_update as updater
 import _thread as thread
 import requests
+import ctypes.util
 
 from discord.utils import get
 
@@ -14,7 +15,7 @@ if not discord.opus.is_loaded():
     # you should replace this with the location the
     # opus library is located in and with the proper filename.
     # note that on windows this DLL is automatically provided for you
-    discord.opus.load_opus('opus')
+    discord.opus.load_opus(ctypes.util.find_library('opus'))
 
 client = discord.Client()
 client.cmd_list = botcmd.init_commands(client)
