@@ -7,7 +7,7 @@ class markov_word :
 	def __init__(self) :
 		self.next = {}
 		self.total = 0
-		self.clear_mem_after_compute = False
+		self.clear_mem_after_compute = True
 
 	def train(self, word) :
 		if word in self.next :
