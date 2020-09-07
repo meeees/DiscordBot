@@ -7,6 +7,7 @@ class markov_word :
 	def __init__(self) :
 		self.next = {}
 		self.total = 0
+		self.clear_mem_after_compute = True
 
 	def train(self, word) :
 		if word in self.next :
@@ -25,6 +26,8 @@ class markov_word :
 			this_prob = float(v) / float(self.total)
 			culm_chance += this_prob
 			self.probs.append(culm_chance)
+		if self.clear_mem_after_compute :
+			self.cleanup()
 
 	def get_next(self) :
 		if self.probs == None :
@@ -36,6 +39,11 @@ class markov_word :
 		for i in range(0, len(self.probs)) :
 			if self.probs[i] >= test :
 				return self.sorted_words[i]
+	
+	# after computation, we can free memory
+	def cleanup(self) :
+		self.next = None
+		
 
 
 
