@@ -9,7 +9,7 @@ async def markov(message, args, author, client) :
     if len(args) == 0 :
         if (not hasattr(client, 'markov_chains')) or client.markov_chains == None :
             tmp = await message.channel.send("Generating markov chains, please wait...")
-            client.markov_chains = bot_markov_chain(True)
+            client.markov_chains = bot_markov_chain(False)
             client.markov_chains.load_markov('bot-data/136984919875387393/general')
             await tmp.delete()
         sentence = client.markov_chains.make_sentence()
@@ -24,7 +24,7 @@ async def markov(message, args, author, client) :
     else :
         if (not hasattr(client, 'named_markov_chains')) or client.named_markov_chains == None :
             tmp = await message.channel.send("Generating named markov chains, please wait...")
-            client.named_markov_chains = named_bot_markov_chain(True)
+            client.named_markov_chains = named_bot_markov_chain(False)
             client.named_markov_chains.load_markov('bot-data/136984919875387393/general')
             await tmp.delete()
         try :
